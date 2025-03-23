@@ -1,8 +1,17 @@
 import json
 import csv
 import os
-from typing import List, Dict, Any
+from typing import TypedDict, List, Dict, Any
 
+
+class ProductSelectors(TypedDict):
+    """Type for selectors"""
+    product: str
+    name: str
+    price: str
+    image: str
+    rating: str
+    next_page: str
 
 def save_to_json(data: List[Dict[str:Any]], filename:str) -> None:
     
