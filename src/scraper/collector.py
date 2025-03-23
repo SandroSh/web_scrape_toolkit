@@ -104,6 +104,42 @@ class ProductScraper:
             return urljoin(self.base_url, next_link[0].get('href'))
         return None
     
+    def scrape(self, start_url:str, max_pages:int  = None) -> List[Dict[str:str]]:
+        
+        all_products = []
+        current_url = start_url
+        page_count = 0
+        
+        while current_url and (max_pages is None or page_count < max_pages):
+            
+            self.logger.info(f"Scraping: {current_url} page {page_count + 1}")
+            
+            html = self.fetch_page(current_url)
+            
+            if not html:
+                break
+            
+            parser = HTMLParser(html)
+            products = self.extract_product_data(parser)
+            
+            for product in products:
+                
+                if product['image_url']:
+                    product['image_path'] = self.download_image(product['image_url'], product['name'])
+                    
+            all_products.extend(products)
+            
+            page_count += 1
+            
+            current_url = self.get_nex_page(parser)
+            
+            if all_products:
+                save_to_json(all_products, 'products.json')
+                save_to_csv(all_products, 'products.csv')
+                self.logger.info(f"{len(all_products)} products scraped")
+                
+            return all_products
+        
     
         
             
