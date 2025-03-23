@@ -20,7 +20,7 @@ A flexible Python web scraper for extracting product data from e-commerce websit
 
 ## Installation
 
-1. **Clone the Repository** (replace `<repository-url>` with your actual repo URL):
+1. **Clone the Repository** 
    ```bash
-   git clone <repository-url>
-   cd multi-format-data-collector
+   git clone https://github.com/SandroSh/web_scrape_toolkit.git
+   cd web_scrape_toolkit
