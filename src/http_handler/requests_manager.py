@@ -4,6 +4,8 @@ import ssl
 from requests.adapters import HTTPAdapter
 from urllib3.poolmanager import PoolManager
 from urllib3.util.ssl_ import create_urllib3_context
+from error_handler import handle_http_error
+
 DEFAULT_USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -27,14 +29,6 @@ class SSLAdapter(HTTPAdapter):
         return PoolManager(*args, **kwargs)
     
         
-
-
-
-
-
-
-
-
 def get_request(url:str, auth_token: Optional[str] = None, custom_headers: Optional[Dict] = None, timeout: int = 10) -> str:
     """
     Fetch web content from a given URL using a GET request with headers.
@@ -70,7 +64,8 @@ def get_request(url:str, auth_token: Optional[str] = None, custom_headers: Optio
         return response.text
     
     except requests.RequestException as e:
-        raise requests.RequestException(f'Error in request: {e}')
+       error_message = handle_http_error(e)
+       raise requests.RequestException(error_message)
     finally:
         session.close()
 
@@ -114,7 +109,8 @@ def post_request(url:str, data:Dict, auth_token:Optional[str] = None, custom_hea
         response.raise_for_status()
         return response.text
     except requests.RequestException as e:
-        raise requests.RequestException(f'Error in request: {e}')
+       error_message = handle_http_error(e)
+       raise requests.RequestException(error_message)
     finally:
         session.close()
     
@@ -152,7 +148,8 @@ def put_request(url: str, data: Dict, auth_token: Optional[str] = None, custom_h
         response.raise_for_status()
         return response
     except requests.RequestException as e:
-        raise requests.RequestException(f'Error in request: {e}')
+       error_message = handle_http_error(e)
+       raise requests.RequestException(error_message)
     finally:
         session.close()
     
@@ -186,6 +183,7 @@ def delete_request(url: str, auth_token: Optional[str] = None, custom_headers: O
         response.raise_for_status()
         return response.text()
     except requests.RequestException as e:
-        raise requests.RequestException(f'Failed to delete {url}: {str(e)}')
+       error_message = handle_http_error(e)
+       raise requests.RequestException(error_message)
     finally:
         session.close()
